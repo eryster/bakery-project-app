@@ -1,6 +1,8 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getAuth, onAuthStateChanged, signInAnonymously } from "firebase/auth"; 
+import { onAuthStateChanged, signInAnonymously } from "firebase/auth"; 
+import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 
 const firebaseConfig = {
     apiKey: process.env.EXPO_PUBLIC_API_KEY,
@@ -17,8 +19,9 @@ if (!firebaseConfig.apiKey) {
 }
 
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app); 
-export const db = getFirestore(app);
+export const auth = initializeAuth(app, {
+    persistence: getReactNativePersistence(ReactNativeAsyncStorage)
+});
 
 onAuthStateChanged(auth, (user) => {
   if (!user) {
@@ -33,3 +36,6 @@ onAuthStateChanged(auth, (user) => {
     console.log("User already authenticated. UID:", user.uid);
   }
 });
+
+
+export const db = getFirestore(app);

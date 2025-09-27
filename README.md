@@ -8,10 +8,10 @@
 *Siga os passos abaixo no seu terminal para baixar o código e instalar as dependências do projeto (**React Native, Expo, Firebase, etc.**).*
 
  1. Clonar o Repositório
-> `git clone https://github.com/ErickDevPy/project-bakery-app.git`
+> `git clone https://github.com/ErickDevPy/bakery-project-app.git`
 
 2. Acessar a Pasta do Projeto
-> `cd project-bakery-app`
+> `cd bakery-project-app.git`
 
 3. Instalar as Dependências
 > `npm install`

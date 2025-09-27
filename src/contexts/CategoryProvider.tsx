@@ -1,6 +1,8 @@
+import { onAuthStateChanged } from 'firebase/auth';
 import { createContext, useState, useEffect, ReactNode, useContext } from 'react';
 import { Loading } from '~/components';
 import { categoryManager, salesManager } from '~/databaseUtils';
+import { auth } from '~/services/firebase';
 import { Category } from '~/types';
 
 interface CategoryContextType {
@@ -22,23 +24,36 @@ export function CategoryProvider({ children }: CategoryProviderProps) {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const unsubscribeCategories = categoryManager.onCategoriesAndProductsChange((newCategories: Category[]) => {
-            setCategories(newCategories);
-        });
+    let unsubscribeCategories: () => void = () => {};
+    let unsubscribeSummary: () => void = () => {};
 
-        const unsubscribeSummary = salesManager.onTodaySummaryChange((todaySummary) => {
-            if (todaySummary) {
-                setMoney(todaySummary.totalPrice);
-                setProfit(todaySummary.profit)
-            }
+    const unsubscribeAuth = onAuthStateChanged(auth, user => {
+        if (user) {
+            unsubscribeCategories = categoryManager.onCategoriesAndProductsChange((newCategories: Category[]) => {
+                setCategories(newCategories);
+            });
+
+            unsubscribeSummary = salesManager.onTodaySummaryChange((todaySummary) => {
+                if (todaySummary) {
+                    setMoney(todaySummary.totalPrice);
+                    setProfit(todaySummary.profit);
+                }
+                setLoading(false);
+            });
+        } else {
+            setCategories([]);
+            setMoney(0);
+            setProfit(0);
             setLoading(false);
-        });
+        }
+    });
 
-        return () => {
-            unsubscribeCategories();
-            unsubscribeSummary();
-        };
-    }, []);
+    return () => {
+        unsubscribeAuth();
+        unsubscribeCategories();
+        unsubscribeSummary();
+    };
+}, []);
 
     if (loading) {
         return <Loading text="Carregando dados de produtos..." />;
