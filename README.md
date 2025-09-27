@@ -11,7 +11,7 @@
 > `git clone https://github.com/ErickDevPy/bakery-project-app.git`
 
 2. Acessar a Pasta do Projeto
-> `cd bakery-project-app.git`
+> `cd bakery-project-app`
 
 3. Instalar as Dependências
 > `npm install`
