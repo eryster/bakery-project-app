@@ -1,0 +1,1 @@
+export type PurchaseStatus = 'idle' | 'processing' | 'success' | 'fail';
